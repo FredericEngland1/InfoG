@@ -1,11 +1,7 @@
 #include "DNDImgWidget.h"
 
 DNDImgWidget::DNDImgWidget(unsigned int width, unsigned int height) {
-	img = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
-	cv::cvtColor(img, img, cv::COLOR_BGR2RGBA);
-
-	DNDImgWidget::width = width;
-	DNDImgWidget::height = height;
+	img = Image(width, height);
 }
 
 void DNDImgWidget::display() {
@@ -17,8 +13,8 @@ void DNDImgWidget::display() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.cols, img.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data);
-	ImGui::Image((void*)(static_cast<intptr_t>(texture)), ImVec2(img.cols, img.rows));
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.getPixels());
+	ImGui::Image((void*)(static_cast<intptr_t>(texture)), ImVec2(img.getWidth(), img.getHeight()));
 
 	if (notified) {
 		if (ImGui::IsItemHovered()) changeImage(DNDFileManager::getPaths().front());
@@ -28,20 +24,6 @@ void DNDImgWidget::display() {
 }
 
 void DNDImgWidget::changeImage(std::string path) {
-	cv::Mat imgImported = cv::imread(path, cv::IMREAD_COLOR);
 
-	if (imgImported.empty()) {
-		std::cout << "Failed to load image : " << std::endl;
-		std::cout << path << std::endl;
-
-		return;
-	}
-
-	cv::cvtColor(imgImported, imgImported, cv::COLOR_BGR2RGBA);
-
-	cv::Size size(width, height);
-	cv::Mat resizedImg;
-	cv::resize(imgImported, resizedImg, size);
-
-	img = resizedImg;
+	img.replaceImg(path);
 }

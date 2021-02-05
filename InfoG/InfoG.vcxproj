@@ -146,6 +146,7 @@
     <ClCompile Include="DNDImgWidget.cpp" />
     <ClCompile Include="DNDMosaicWidget.cpp" />
     <ClCompile Include="DNDWidget.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mosaic.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="DNDImgWidget.h" />
     <ClInclude Include="DNDMosaicWidget.h" />
     <ClInclude Include="DNDWidget.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="Mosaic.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>

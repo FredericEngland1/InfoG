@@ -1,8 +1,6 @@
 #include "Mosaic.h"
 
-Mosaic::Mosaic(unsigned int width, unsigned int height, unsigned int borderTickness) {
-	Mosaic::width = width;
-	Mosaic::height = height;
+Mosaic::Mosaic(unsigned int width, unsigned int height, unsigned int borderTickness) : Image(width, height) {
 	Mosaic::borderTickness = borderTickness;
 }
 
@@ -65,20 +63,27 @@ void Mosaic::createMosaic() {
 		cv::vconcat(mosaicImg, tempMosaicImg, mosaicImg);
 	}
 
-	if (mosaicImg.empty()) mosaic = tempMosaicImg;
-	else mosaic = mosaicImg;
+	if (mosaicImg.empty()) img = tempMosaicImg;
+	else img = mosaicImg;
 }
 
-cv::Mat Mosaic::getMosaic() {
+const void* Mosaic::getPixels() {
 
 	if (requiresCreation) {
 		createMosaic();
 		requiresCreation = false;
 	}
 
-	if (mosaic.empty()) {
+	if (img.empty()) {
 		std::cout << "Trying to get an empty panorama" << std::endl;
 	}
 
-	return mosaic;
+	return img.data;
+}
+
+void Mosaic::outputImage(std::string path) {
+	cv::Mat outputImg;
+	cv::cvtColor(img, outputImg, cv::COLOR_RGBA2BGRA);
+
+	cv::imwrite("result.jpg", outputImg);
 }

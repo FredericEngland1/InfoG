@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #include "Shader.h"
 #include "DNDImgWidget.h"
@@ -21,7 +22,24 @@ const int WIN_HEIGHT = 1080;
 const int WIN_WIDTH = 1920;
 const char *WIN_TITLE = "TestApp";
 
-const char* glsl_version = "#version 150";
+const char* glsl_version = "#version 460";
+
+void GLAPIENTRY MessageCallback(
+    GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    const void* userParam)
+{
+    // We ignore the info dumps
+    if (type == 0x8251) return;
+
+    fprintf(stderr, "GL_CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+        (type == GL_DEBUG_TYPE_ERROR ? "* GL_ERROR *" : ""),
+        type, severity, message);
+}
 
 int main()
 {
@@ -42,6 +60,9 @@ int main()
 
     if (gl3wInit()) fprintf(stderr, "Error, failed to init Gl3w\n"); // gl3wInit needs to be called after a valid context (created window and made it current context) is created | Also this is the opengl loader
     
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(MessageCallback, 0);
+
     // Imgui Context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -60,16 +81,6 @@ int main()
 
     // Hello triangle ?
 
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
-     };
-
-    unsigned int vbo, vao;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-
     std::ifstream vShaderStream("RedVShader.shader");
     std::stringstream vBuffer;
     vBuffer << vShaderStream.rdbuf();
@@ -86,6 +97,44 @@ int main()
 
     DNDImgWidget dndImgWidget = DNDImgWidget();
     DNDMosaicWidget dndMosaicWidget = DNDMosaicWidget();
+
+    std::vector<float> vertices {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     -0.5f,  0.5f, 0.0f,
+     0.5f,  0.5f, 0.0f
+        /*-0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f*/
+    };
+
+    std::vector<unsigned int> indices {
+        0, 1, 3,
+        3, 2, 0
+        //0, 1, 2
+    };
+
+    baseShader.use();
+
+    unsigned int vao, vbo, ibo;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glGenBuffers(1, &ibo);
+    glGenBuffers(1, &vbo);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ibo);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -112,16 +161,14 @@ int main()
         }
 
         // Draw triangle
-        baseShader.use();
+        //baseShader.use();
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(0);
+        //std::cout << vertices.size() * sizeof(float) << std::endl;
 
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glBindVertexArray(0);
 
         // Render dear imgui onto screen
         ImGui::Render();
@@ -144,6 +191,8 @@ int main()
 
     glfwDestroyWindow(window);
     glfwTerminate();
+
+    baseShader.destroy();
 
     return 0;
 }

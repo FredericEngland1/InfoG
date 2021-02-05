@@ -7,19 +7,16 @@
 
 #include <GL/gl3w.h>
 
-#include <opencv2/opencv.hpp>
-
 #include "DNDWidget.h"
 #include "DNDFileManager.h"
+#include "Image.h"
 
 class DNDImgWidget : public DNDWidget {
 protected :
 	virtual void changeImage(std::string path);
 
-	unsigned int width;
-	unsigned int height;
+	Image img;
 
-	cv::Mat img;
 public :
 	DNDImgWidget(unsigned int width = 200, unsigned int height = 200);
 	virtual void display();

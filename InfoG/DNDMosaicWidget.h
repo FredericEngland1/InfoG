@@ -7,10 +7,12 @@ class DNDMosaicWidget : public DNDImgWidget {
 private :
 	void changeImage(std::vector<std::string> paths);
 
-	Mosaic panorama = Mosaic();
+	Mosaic img;
 
 public :
-	void display() override;
 
+	DNDMosaicWidget(unsigned int width = 200, unsigned int height = 200);
+
+	void display() override;
 	void outputImage();
 };

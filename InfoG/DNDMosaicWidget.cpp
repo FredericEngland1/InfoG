@@ -1,9 +1,11 @@
 #include "DNDMosaicWidget.h"
 
-void DNDMosaicWidget::changeImage(std::vector<std::string> paths) {
-	for (std::string path : paths) panorama.addImage(path);
+DNDMosaicWidget::DNDMosaicWidget(unsigned int width, unsigned int height) {
+	img = Mosaic(width, height);
+}
 
-	img = panorama.getMosaic();
+void DNDMosaicWidget::changeImage(std::vector<std::string> paths) {
+	for (std::string path : paths) img.addImage(path);
 }
 
 void DNDMosaicWidget::display() {
@@ -15,8 +17,8 @@ void DNDMosaicWidget::display() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.cols, img.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data);
-	ImGui::Image((void*)(static_cast<intptr_t>(texture)), ImVec2(img.cols, img.rows));
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.getPixels());
+	ImGui::Image((void*)(static_cast<intptr_t>(texture)), ImVec2(img.getWidth(), img.getHeight()));
 
 	if (notified) {
 		if (ImGui::IsItemHovered()) {
@@ -32,8 +34,6 @@ void DNDMosaicWidget::display() {
 
 void DNDMosaicWidget::outputImage() {
 
-	cv::Mat outputImg;
-	cv::cvtColor(img, outputImg, cv::COLOR_RGBA2BGRA);
+	img.outputImage("Result.jpg");
 
-	cv::imwrite("result.jpg", outputImg);
 }

@@ -8,16 +8,14 @@
 
 #include <cmath>
 
-class Mosaic {
+#include "Image.h"
+
+class Mosaic : public Image {
 private :
 	void createMosaic();
 
 	std::vector<cv::Mat> images;
-	cv::Mat mosaic;
 	bool requiresCreation = false;
-
-	unsigned int width;
-	unsigned int height;
 	unsigned int borderTickness;
 
 public :
@@ -26,5 +24,7 @@ public :
 	void addImage(std::string path);
 	void clearImages();
 
-	cv::Mat getMosaic();
+	void outputImage(std::string path);
+
+	virtual const void* getPixels() override;
 };
