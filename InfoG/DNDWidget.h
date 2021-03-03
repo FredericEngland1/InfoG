@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Window.h"
+
 class DNDWidget {
 protected :
 	bool notified = false;
@@ -7,4 +9,6 @@ protected :
 public :
 	DNDWidget();
 	void notify();
+
+	virtual void render() = 0;
 };

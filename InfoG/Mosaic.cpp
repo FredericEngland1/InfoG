@@ -1,7 +1,7 @@
 #include "Mosaic.h"
 
-Mosaic::Mosaic(unsigned int width, unsigned int height, unsigned int borderTickness) : Image(width, height) {
-	Mosaic::borderTickness = borderTickness;
+Mosaic::Mosaic(unsigned int width, unsigned int height, unsigned int borderTickness) : Image(width, height), borderTickness(borderTickness) {
+
 }
 
 void Mosaic::addImage(std::string path) {

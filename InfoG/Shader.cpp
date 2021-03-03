@@ -1,7 +1,21 @@
 #include "Shader.h"
 
-Shader::Shader (const std::string& vShader, const std::string& fShader) {
-	program = createShader(vShader, fShader);
+Shader::Shader (const std::string& vShaderPath, const std::string& fShaderPath) {
+
+	std::ifstream vShaderStream(vShaderPath);
+	std::stringstream vBuffer;
+	vBuffer << vShaderStream.rdbuf();
+
+	std::ifstream gfShaderStream(fShaderPath);
+	std::stringstream gfBuffer;
+	gfBuffer << gfShaderStream.rdbuf();
+
+	program = createShader(vBuffer.str(), gfBuffer.str());
+}
+
+void Shader::destroy()
+{
+	glDeleteProgram(program);
 }
 
 void Shader::use() {
@@ -65,8 +79,4 @@ int Shader::createShader(const std::string& vShaderS, const std::string& fShader
 
 	// glDetach ?
 	return program;
-}
-
-void Shader::destroy() {
-	glDeleteProgram(program);
 }

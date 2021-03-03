@@ -6,23 +6,36 @@
 
 #include <GLFW/glfw3.h>
 
-#include <iostream>
-#include <fstream>
 #include <vector>
+#include <cmath>
+
+#include <glm/glm.hpp>
 
 #include "Shader.h"
 #include "DNDImgWidget.h"
 #include "DNDMosaicWidget.h"
 #include "DNDFileManager.h"
 
+#include "WConsole.h"
+#include "WSceneObject.h"
+
+#include "RObject.h"
+
+#include "PerspectiveCamera.h"
+#include "Camera.h"
+
+#include <opencv2/opencv.hpp>
+#include "Renderer.h"
+
+
 GLFWwindow* window;
 GLFWmonitor* monitor;
 
-const int WIN_HEIGHT = 1080;
-const int WIN_WIDTH = 1920;
+const int WIN_HEIGHT = 1440;
+const int WIN_WIDTH = 2560;
 const char *WIN_TITLE = "TestApp";
 
-const char* glsl_version = "#version 460";
+const char* glsl_version = "#version 460 core";
 
 void GLAPIENTRY MessageCallback(
     GLenum source,
@@ -36,9 +49,11 @@ void GLAPIENTRY MessageCallback(
     // We ignore the info dumps
     if (type == 0x8251) return;
 
-    fprintf(stderr, "GL_CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+    std::string error = ("GL_CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
         (type == GL_DEBUG_TYPE_ERROR ? "* GL_ERROR *" : ""),
         type, severity, message);
+
+    MainWConsole::mainConsole.addLog(error, LogType::error);
 }
 
 int main()
@@ -47,6 +62,7 @@ int main()
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Version 4.6
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
     glfwWindowHint(GLFW_SAMPLES, 4);
     //glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -71,6 +87,9 @@ int main()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
+    ImFont* font1 = io.Fonts->AddFontFromFileTTF("Fonts/arial.ttf", 30);
+    ImFont* font2 = io.Fonts->AddFontFromFileTTF("Fonts/consola.ttf", 30);
+
     // Style
     ImGui::StyleColorsDark();
 
@@ -78,68 +97,66 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+    std::vector<glm::vec3> vertices{
+        {-0.5,-0.5,-0.5},
+        {-0.5,-0.5,0.5 },
+        {0.5,-0.5,-0.5 },
+        {0.5,-0.5,0.5 },
+        {-0.5,0.5,-0.5 },
+        {-0.5,0.5,0.5 },
+        {0.5,0.5,-0.5 },
+        {0.5,0.5,0.5 }
+    };
 
-    // Hello triangle ?
+    std::vector<unsigned int> indices{
+        0,1,3,
+        0,2,3,
 
-    std::ifstream vShaderStream("RedVShader.shader");
-    std::stringstream vBuffer;
-    vBuffer << vShaderStream.rdbuf();
+        0,1,5,
+        0,4,5,
 
-    std::ifstream fShaderStream("RedFShader.shader");
-    std::stringstream fBuffer;
-    fBuffer << fShaderStream.rdbuf();
+        0,2,6,
+        0,4,6,
 
-    Shader baseShader = Shader(vBuffer.str(), fBuffer.str());
+        2,3,7,
+        2,6,7,
 
-    // End of hello triangle one time actions
+        1,3,7,
+        1,5,7,
+
+        4,5,7,
+        4,6,7
+    };
+
+    /*std::vector<glm::vec3> vertices{
+        {-.5,.5,0},
+        {.5,.5,0},
+        {-.5,-.5,0}
+    };
+
+    std::vector<unsigned int> indices{
+        0,1,2
+    };*/
+
+    RObject cube = RObject(vertices, indices, GL_TRIANGLES, "Cube");
+    RObjectManager::addRObject(cube);
+
+    PerspectiveCamera camera = PerspectiveCamera(((float)WIN_WIDTH / WIN_HEIGHT), 30, {15,10,4});
+
+    Renderer renderer = Renderer(camera);
+
 
     DNDFileManager::setGLFWwindow(window);
 
     DNDImgWidget dndImgWidget = DNDImgWidget();
     DNDMosaicWidget dndMosaicWidget = DNDMosaicWidget();
 
-    std::vector<float> vertices {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     -0.5f,  0.5f, 0.0f,
-     0.5f,  0.5f, 0.0f
-        /*-0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f*/
-    };
-
-    std::vector<unsigned int> indices {
-        0, 1, 3,
-        3, 2, 0
-        //0, 1, 2
-    };
-
-    baseShader.use();
-
-    unsigned int vao, vbo, ibo;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &ibo);
-    glGenBuffers(1, &vbo);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-    glBindVertexArray(0);
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ibo);
+    WSceneObject sceneObject = WSceneObject();
 
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+        glClearColor(0.9, 0.9, 0.9, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // New frame
@@ -147,28 +164,47 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // Gui
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        renderer.render();
+        sceneObject.render();
+
+        MainWConsole::mainConsole.render();
+
         {
-            ImGui::Begin("Demo window");
-            ImGui::Button("Hello!");
+            ImGui::Begin("ScreenShot");
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-            dndImgWidget.display();
-            dndMosaicWidget.display();
+            if (ImGui::Button("Show Console")) MainWConsole::mainConsole.p_open = !MainWConsole::mainConsole.p_open;
+
+            /*if (ImGui::Button("Add console Text")) console.addLog( "This is a test", LogType::information);
+            if (ImGui::Button("Add console Error")) console.addLog("This is an error", LogType::error);*/
+
+            if (ImGui::Button("Screenshot")) {
+
+                cv::Mat image(1920, 1920, CV_8UC3);
+
+                //use fast 4-byte alignment (default anyway) if possible
+                glPixelStorei(GL_PACK_ALIGNMENT, (image.step & 3) ? 1 : 4);
+
+                //set length of one complete row in destination data (doesn't need to equal img.cols)
+                glPixelStorei(GL_PACK_ROW_LENGTH, image.step / image.elemSize());
+
+                glReadPixels(0, 0, image.cols, image.rows, GL_BGR, GL_UNSIGNED_BYTE, image.data);
+
+                //cv::cvtColor(img, outputImg, cv::COLOR_RGBA2BGRA);
+
+                cv::Mat imageFlipper;
+
+                cv::flip(image, imageFlipper, 0);
+
+                cv::imwrite("result.jpg", imageFlipper);
+
+            }
 
             ImGui::End();
         }
-
-        // Draw triangle
-        //baseShader.use();
-
-        //std::cout << vertices.size() * sizeof(float) << std::endl;
-
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        //glBindVertexArray(0);
 
         // Render dear imgui onto screen
         ImGui::Render();
@@ -183,16 +219,12 @@ int main()
         DNDFileManager::clearPaths();
     }
 
-    //glDisableVertexAttribArray(0);
-
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(window);
     glfwTerminate();
-
-    baseShader.destroy();
 
     return 0;
 }

@@ -88,6 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DNDFileManager.cpp" />
     <ClCompile Include="DNDImgWidget.cpp" />
@@ -148,23 +150,48 @@
     <ClCompile Include="DNDWidget.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="MainApp.cpp" />
+    <ClCompile Include="MainWConsole.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="OrthographicCamera.cpp" />
+    <ClCompile Include="PerspectiveCamera.cpp" />
+    <ClCompile Include="RObject.cpp" />
     <ClCompile Include="Mosaic.cpp" />
     <ClCompile Include="Project.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RObjectManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="WConsole.cpp" />
+    <ClCompile Include="WSceneObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="DNDFileManager.h" />
     <ClInclude Include="DNDImgWidget.h" />
     <ClInclude Include="DNDMosaicWidget.h" />
     <ClInclude Include="DNDWidget.h" />
+    <ClInclude Include="MainWConsole.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="OrthographicCamera.h" />
+    <ClInclude Include="PerspectiveCamera.h" />
+    <ClInclude Include="RObject.h" />
     <ClInclude Include="Mosaic.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RObjectManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="WConsole.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="WSceneObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RedFShader.shader" />
-    <None Include="RedVShader.shader" />
+    <None Include="GreyFShader.shader" />
+    <None Include="PBS.shader" />
+    <None Include="WhiteFShader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

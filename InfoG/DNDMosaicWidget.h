@@ -13,6 +13,6 @@ public :
 
 	DNDMosaicWidget(unsigned int width = 200, unsigned int height = 200);
 
-	void display() override;
+	void render() override;
 	void outputImage();
 };

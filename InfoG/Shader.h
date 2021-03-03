@@ -5,7 +5,10 @@
 
 #include <string>
 #include <vector>
+
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 class Shader {
 private:
@@ -21,7 +24,9 @@ private:
 public:
 
 	Shader(const std::string& vShader, const std::string& fShader);
-	void use();
+	Shader() = default;
 
+	void use();
 	void destroy();
+	unsigned int getProgramID() { return program; };
 };

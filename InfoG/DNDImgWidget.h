@@ -13,11 +13,13 @@
 
 class DNDImgWidget : public DNDWidget {
 protected :
-	virtual void changeImage(std::string path);
 
+	virtual void changeImage(std::string path);
 	Image img;
 
 public :
+
 	DNDImgWidget(unsigned int width = 200, unsigned int height = 200);
-	virtual void display();
+	void render() override;
+
 };

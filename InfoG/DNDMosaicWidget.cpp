@@ -8,7 +8,7 @@ void DNDMosaicWidget::changeImage(std::vector<std::string> paths) {
 	for (std::string path : paths) img.addImage(path);
 }
 
-void DNDMosaicWidget::display() {
+void DNDMosaicWidget::render() {
 
 	GLuint texture;
 	glGenTextures(1, &texture);

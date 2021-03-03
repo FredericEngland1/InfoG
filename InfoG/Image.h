@@ -13,7 +13,7 @@ public :
 	Image(unsigned int width = 200, unsigned int height = 200);
 	void replaceImg(std::string path);
 
-	virtual const void* getPixels();
-	unsigned int getWidth();
-	unsigned int getHeight();
+	virtual const void* getPixels() { return img.data; };
+	unsigned int getWidth() { return img.cols; };
+	unsigned int getHeight() { return img.rows; };
 };

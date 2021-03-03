@@ -1,13 +1,11 @@
 #include "Image.h"
 
-Image::Image(unsigned int width, unsigned int height) {
+Image::Image(unsigned int width, unsigned int height) : width(width), height(height) {
+
 	img = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
 	cv::cvtColor(img, img, cv::COLOR_BGR2RGBA);
 
-	Image::width = width;
-	Image::height = height;
 }
-
 
 void Image::replaceImg(std::string path) {
 	cv::Mat imgImported = cv::imread(path, cv::IMREAD_COLOR);
@@ -24,16 +22,6 @@ void Image::replaceImg(std::string path) {
 	cv::Size size(width, height);
 	cv::Mat resizedImg;
 	cv::resize(imgImported, resizedImg, size);
-}
 
-const void* Image::getPixels() {
-	return img.data;
-}
-
-unsigned int Image::getWidth() {
-	return img.cols;
-}
-
-unsigned int Image::getHeight() {
-	return img.rows;
+	img = resizedImg;
 }

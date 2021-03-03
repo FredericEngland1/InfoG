@@ -4,7 +4,7 @@ DNDImgWidget::DNDImgWidget(unsigned int width, unsigned int height) {
 	img = Image(width, height);
 }
 
-void DNDImgWidget::display() {
+void DNDImgWidget::render() {
 
 	GLuint texture;
 	glGenTextures(1, &texture);
