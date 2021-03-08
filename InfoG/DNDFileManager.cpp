@@ -42,5 +42,5 @@ void DNDFileManager::subscribe(DNDWidget* widget) {
 }
 
 void DNDFileManager::unSubscribe(DNDWidget* widget) {
-	remove(subscriberList.begin(), subscriberList.end(), widget);
+	subscriberList.erase(std::remove(subscriberList.begin(), subscriberList.end(), widget), subscriberList.end());
 }

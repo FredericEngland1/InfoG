@@ -17,4 +17,5 @@ public:
 	void setFOV(float FOV);
 	void setAspectRatio(float aspectRatio);
 
+	float getFOV() { return FOV; };
 };

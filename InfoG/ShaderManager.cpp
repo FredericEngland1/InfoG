@@ -8,10 +8,10 @@ ShaderManager::~ShaderManager(){
     }
 }
 
-Shader ShaderManager::getShader(std::string VSPath, std::string FSPath)
+Shader ShaderManager::getShader(std::string VSPath, std::string FSPath, std::string GSPath)
 {
     auto it = std::find_if(shaders.begin(), shaders.end(),
-        [&VSPath, FSPath](const std::pair<std::string, Shader>& element) { return element.first == VSPath + FSPath; });
+        [&VSPath, FSPath, GSPath](const std::pair<std::string, Shader>& element) { return !element.first.compare(VSPath + FSPath + GSPath); });
 
     Shader shader;
 
@@ -19,8 +19,8 @@ Shader ShaderManager::getShader(std::string VSPath, std::string FSPath)
         shader = ((std::pair<std::string, Shader>) * it).second;
     }
     else {
-        shader = Shader(VSPath, FSPath);
-        shaders.push_back(std::make_pair( VSPath + FSPath, shader));
+        shader = Shader(VSPath, FSPath, GSPath);
+        shaders.push_back(std::make_pair( VSPath + FSPath + GSPath, shader));
     }
 
     return shader;
