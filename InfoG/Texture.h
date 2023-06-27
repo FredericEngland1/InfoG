@@ -4,25 +4,26 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <GL/gl3w.h>
 
-
-enum TextureType {
-	plainColor, // TODO find a better name for just a color
-	uv
-};
+#include "Image.h"
 
 class Texture {
 private :
 
-	TextureType type;
+	Image image;
+	std::string path;
 
-	std::vector<glm::vec2> uv;
-	std::vector<glm::vec3> normal;
-	
-	glm::vec4 color;
+	unsigned int textureID;
+
+	void bind();
 
 public :
 
-	TextureType getType() { return type; };
+	Texture() = default;
+	Texture(std::string path);
 
+	unsigned int getTextureID() { return textureID; };
+	Image getImage() { return image; };
+	void randomImage();
 };

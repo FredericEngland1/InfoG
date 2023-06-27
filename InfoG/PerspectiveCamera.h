@@ -12,9 +12,10 @@ private:
 
 public:
 
-	PerspectiveCamera(float aspectRatio = 16/9, float FOV = 90, glm::vec3 position = { 0,0,0 }, float ncp = 0.1f, float fcp = 100.0f);
+	PerspectiveCamera(float aspectRatio = 16/9, float FOV = 90, glm::vec3 position = { 0,0,0 }, float ncp = 0.1f, float fcp = 75000.0f);
 
 	void setFOV(float FOV);
 	void setAspectRatio(float aspectRatio);
 
+	float getFOV() { return FOV; };
 };

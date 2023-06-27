@@ -14,7 +14,7 @@ OrthographicCamera::OrthographicCamera(float left, float right, float bottom, fl
 	recalculateProjection();
 }
 
-void OrthographicCamera::setSize(float left, float right, float bottom, float top)
+void OrthographicCamera::setCorners(float left, float right, float bottom, float top)
 {
 	OrthographicCamera::left = left;
 	OrthographicCamera::right = right;

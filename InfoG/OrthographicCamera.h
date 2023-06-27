@@ -16,6 +16,7 @@ public :
 
 	OrthographicCamera(float left = 0, float right = 0, float bottom = 0, float top = 0, glm::vec3 position = { 0,0,0 }, float ncp = 0.1f, float fcp = 100.0f);
 
-	void setSize(float left, float right, float bottom, float top);
+	void setCorners(float left, float right, float bottom, float top);
+	std::vector<float> getCorners() { return { left,right,bottom,top }; };
 
 };

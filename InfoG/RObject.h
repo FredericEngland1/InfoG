@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Material.h"
 
 #include "ShaderManager.h"
 
@@ -21,14 +22,16 @@ private :
 	unsigned int ID;
 
 	unsigned int vao;
-	Mesh mesh;
-	Texture texture;
+	Material material;
+
+	//Texture texture;
 	Shader shader;
 
+	unsigned int MVMatrixID;
 	unsigned int MVPMatrixID;
+	unsigned int normalMatrixID;
 
 	void initialyzeMesh();
-	void initialyzeTexture();
 
 	glm::vec3 position;
 	glm::vec3 rotation;
@@ -42,35 +45,66 @@ private :
 
 	friend class RObjectManager;
 
+	float degreeRotation;
+
+	std::string VSPath;
+	std::string FSPath;
+	std::string GSPath;
+
 public :
 
-	RObject(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices, unsigned int meshType, 
+	RObject(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> uv, Material material,
 		std::string name = "Default", glm::vec3 position = {0,0,0}, std::string VSPath = "PBS.shader", std::string FSPath = "GreyFShader.shader");
 	RObject(Mesh m, std::string name = "Default", glm::vec3 position = { 0,0,0 }, std::string VSPath = "PBS.shader", std::string FSPath = "GreyFShader.shader");
 
-	//RObject() = default;
+	RObject() = default;
 
 	void initialyze(std::string VSPath, std::string FSPath);
 	void render();
 
+	void useShader();
+
 	glm::vec3 getPosition() { return position; };
-	glm::vec3 setPosition(glm::vec3 position) { RObject::position = position; updateModelMatrix(); };
+	void setPosition(glm::vec3 position) { RObject::position = position; updateModelMatrix(); };
 	glm::vec3 getRotation() { return rotation; };
-	glm::vec3 setRotation(glm::vec3 rotation) { RObject::rotation = rotation; updateModelMatrix();};
+	float getDegreeRotation() { return degreeRotation; };
+	void setDegreeRotation(float cDegreeRotation) { degreeRotation = cDegreeRotation; updateModelMatrix(); };
+	void setRotation(glm::vec3 rotation) { RObject::rotation = rotation; updateModelMatrix();};
 	glm::vec3 getScale() { return scale; };
-	glm::vec3 setScale(glm::vec3 scale) { RObject::scale = scale; updateModelMatrix();};
+	void setScale(glm::vec3 scale) { RObject::scale = scale; updateModelMatrix();};
 
 	glm::mat4 getModelMatrix() { return modelMatrix; };
 
 	std::string getName() { return name; };
+	void setName(std::string iName) { name = iName; };
 
+	unsigned int getMVMatrixID() { return MVMatrixID; };
 	unsigned int getMVPMatrixID() { return MVPMatrixID; };
+	unsigned int getNormalMatrixID() { return normalMatrixID; };
 
 	unsigned int getID() { return ID; };
 
-	void setShader(std::string VSPath, std::string FSPath);
+	void setShader(std::string VSPath, std::string FSPath, std::string GSPath = "");
 	void setShader(Shader shader);
 
-	// TODO add a way to change the current shader
+	unsigned int getUniformLocation(std::string location);
 
+	Material getMaterial() { return material; };
+	Material& getMaterialRef() { return material; };
+
+	std::string getVSPath() { return VSPath; };
+	std::string getFSPath() { return FSPath; };
+	std::string getGSPath() { return GSPath; };
+
+	Mesh mesh;
+	Mesh getMesh() { return mesh; };
+
+	cv::Mat meshImage;
+	unsigned int meshImageHeight;
+	unsigned int meshImageWidth;
+
+	unsigned int meshImageIDIn;
+	unsigned int meshImageIDOut;
+
+	// TODO add a way to change the current shader
 };

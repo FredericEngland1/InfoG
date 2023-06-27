@@ -18,6 +18,7 @@
 
 #include "WConsole.h"
 #include "WSceneObject.h"
+#include "WProperties.h"
 
 #include "RObject.h"
 
@@ -26,13 +27,22 @@
 
 #include <opencv2/opencv.hpp>
 #include "Renderer.h"
+#include "WCamera.h"
+#include "OrthographicCamera.h"
+#include "Cube.h"
+#include "Pyramide.h"
+#include "Fleche.h"
+#include "PlusSign.h"
+#include "SpotLight.h"
+#include "DirectionalLight.h"
+#include "WRaytracing.h"
 
 
 GLFWwindow* window;
 GLFWmonitor* monitor;
 
-const int WIN_HEIGHT = 1440;
-const int WIN_WIDTH = 2560;
+const int WIN_HEIGHT = 1080;
+const int WIN_WIDTH = 1920;
 const char *WIN_TITLE = "TestApp";
 
 const char* glsl_version = "#version 460 core";
@@ -53,7 +63,7 @@ void GLAPIENTRY MessageCallback(
         (type == GL_DEBUG_TYPE_ERROR ? "* GL_ERROR *" : ""),
         type, severity, message);
 
-    MainWConsole::mainConsole.addLog(error, LogType::error);
+    //MainWConsole::mainConsole.addLog(error, LogType::error);
 }
 
 int main()
@@ -97,54 +107,11 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    std::vector<glm::vec3> vertices{
-        {-0.5,-0.5,-0.5},
-        {-0.5,-0.5,0.5 },
-        {0.5,-0.5,-0.5 },
-        {0.5,-0.5,0.5 },
-        {-0.5,0.5,-0.5 },
-        {-0.5,0.5,0.5 },
-        {0.5,0.5,-0.5 },
-        {0.5,0.5,0.5 }
-    };
+    PerspectiveCamera pCamera = PerspectiveCamera(((float)WIN_WIDTH / WIN_HEIGHT), 90, {50,50,25});
+    OrthographicCamera oCamera = OrthographicCamera( -200,200,-200,200,{0,0,50});
 
-    std::vector<unsigned int> indices{
-        0,1,3,
-        0,2,3,
-
-        0,1,5,
-        0,4,5,
-
-        0,2,6,
-        0,4,6,
-
-        2,3,7,
-        2,6,7,
-
-        1,3,7,
-        1,5,7,
-
-        4,5,7,
-        4,6,7
-    };
-
-    /*std::vector<glm::vec3> vertices{
-        {-.5,.5,0},
-        {.5,.5,0},
-        {-.5,-.5,0}
-    };
-
-    std::vector<unsigned int> indices{
-        0,1,2
-    };*/
-
-    RObject cube = RObject(vertices, indices, GL_TRIANGLES, "Cube");
-    RObjectManager::addRObject(cube);
-
-    PerspectiveCamera camera = PerspectiveCamera(((float)WIN_WIDTH / WIN_HEIGHT), 30, {15,10,4});
-
-    Renderer renderer = Renderer(camera);
-
+    RObjectManager::addCamera(&pCamera);
+    RObjectManager::addCamera(&oCamera);
 
     DNDFileManager::setGLFWwindow(window);
 
@@ -153,57 +120,212 @@ int main()
 
     WSceneObject sceneObject = WSceneObject();
 
+    bool wireframe = false;
+
+    //glDisable(GL_CULL_FACE);
+
+    glEnable(GL_DEPTH_TEST);
+
+    WProperties properties = WProperties();
+    WCamera wPCamera = WCamera(pCamera, "Perspective View");
+    WCamera wOCamera = WCamera(oCamera, "Orthographic View");
+
+    WRaytracing wRay = WRaytracing(pCamera);
+
+    int screenshotsToOutputP = 0;
+    int screenshotsToOutputO = 0;
+
+    DirectionalLight();
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
         glClearColor(0.9, 0.9, 0.9, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // New frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-        renderer.render();
         sceneObject.render();
+        properties.render();
+        wPCamera.render();
+        wOCamera.render();
+        wRay.render();
 
         MainWConsole::mainConsole.render();
 
         {
-            ImGui::Begin("ScreenShot");
+            if (ImGui::BeginMainMenuBar())
+            {
+                if (ImGui::BeginMenu("Windows"))
+                {
+                    if (ImGui::MenuItem("Console")) MainWConsole::mainConsole.p_open = !MainWConsole::mainConsole.p_open;
+                    if (ImGui::MenuItem("Perspective")) wPCamera.p_open = !wPCamera.p_open;
+                    if (ImGui::MenuItem("Orthographic")) wOCamera.p_open = !wOCamera.p_open;
+                    if (ImGui::MenuItem("Properties")) properties.p_open = !properties.p_open;
+                    if (ImGui::MenuItem("Scene graph")) sceneObject.p_open = !sceneObject.p_open;
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu("Primitives"))
+                {
+                    if (ImGui::MenuItem("Cube")) Cube();
+                    if (ImGui::MenuItem("Pyramide")) Pyramide();
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                    if (ImGui::MenuItem("Fleche")) Fleche();
+                    if (ImGui::MenuItem("Plus Sign")) PlusSign();
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu("Lights"))
+                {
+                    if (ImGui::MenuItem("Directional")) {
+                        new DirectionalLight();
+                    }
+                    if (ImGui::MenuItem("Spot")) {
+                        new SpotLight();
+                    }
+                    if (ImGui::MenuItem("Point")) {
+                        new PointLight();
+                    }
 
-            if (ImGui::Button("Show Console")) MainWConsole::mainConsole.p_open = !MainWConsole::mainConsole.p_open;
-
-            /*if (ImGui::Button("Add console Text")) console.addLog( "This is a test", LogType::information);
-            if (ImGui::Button("Add console Error")) console.addLog("This is an error", LogType::error);*/
-
-            if (ImGui::Button("Screenshot")) {
-
-                cv::Mat image(1920, 1920, CV_8UC3);
-
-                //use fast 4-byte alignment (default anyway) if possible
-                glPixelStorei(GL_PACK_ALIGNMENT, (image.step & 3) ? 1 : 4);
-
-                //set length of one complete row in destination data (doesn't need to equal img.cols)
-                glPixelStorei(GL_PACK_ROW_LENGTH, image.step / image.elemSize());
-
-                glReadPixels(0, 0, image.cols, image.rows, GL_BGR, GL_UNSIGNED_BYTE, image.data);
-
-                //cv::cvtColor(img, outputImg, cv::COLOR_RGBA2BGRA);
-
-                cv::Mat imageFlipper;
-
-                cv::flip(image, imageFlipper, 0);
-
-                cv::imwrite("result.jpg", imageFlipper);
-
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
             }
 
-            ImGui::End();
+            {
+                ImGui::Begin("Cameras controls");
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+
+                if (ImGui::Button("Wireframe")) {
+                    if (!wireframe) {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    }
+                    else {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                        //glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+                    }
+
+                    wireframe = !wireframe;
+                }
+
+                /*if (ImGui::Button("Add console Text")) console.addLog( "This is a test", LogType::information);
+                if (ImGui::Button("Add console Error")) console.addLog("This is an error", LogType::error);*/
+
+                ImGui::Text("Perspective Camera");
+                ImGui::Spacing();
+
+                PerspectiveCamera* camera = (PerspectiveCamera*)RObjectManager::getCameras().at(0);
+
+                {
+                    float postitionData[4]{ camera->getPosition().x,camera->getPosition().y,camera->getPosition().z,camera->getFOV() };
+                    float cPlaneData[2] = { camera->getNCP(), camera->getFCP() };
+                    float lookAt[3]{ camera->getLookAt().x,camera->getLookAt().y,camera->getLookAt().z };
+
+                    ImGui::Text("Camera X - Y - Z - FOV");
+                    ImGui::DragFloat4("##C1-P", postitionData);
+                    camera->setPosition({ postitionData[0],postitionData[1],postitionData[2] });
+                    camera->setFOV(postitionData[3]);
+
+                    ImGui::Text("Near/Far clipping plane");
+                    ImGui::DragFloat2("##C1-CP", cPlaneData);
+                    camera->setNCP(cPlaneData[0]);
+                    camera->setFCP(cPlaneData[1]);
+
+                    ImGui::Text("LookAt X - Y - Z");
+                    ImGui::DragFloat3("##C1-LA", lookAt);
+                    camera->setLookAt({ lookAt[0], lookAt[1], lookAt[2] });
+
+                    ImGui::Text("Number of frame to Output : ");
+
+                    ImGui::InputInt("##C1-SS", &screenshotsToOutputP, 1, 100);
+
+                    if (screenshotsToOutputP < 0) {
+                        screenshotsToOutputP = 0;
+                    }
+
+                    if (ImGui::Button("Output frames")) wPCamera.setImagesToOutput(screenshotsToOutputP);
+
+                    ImGui::Spacing();
+
+                    ImGui::Text("Background color : ");
+                    float bColor[4]{ wPCamera.getClearColor().x*100, wPCamera.getClearColor().y*100, wPCamera.getClearColor().z*100, wPCamera.getClearColor().w*100 };
+
+                    ImGui::DragFloat4("##C1-BGC", bColor);
+
+                    wPCamera.setClearColor({ bColor[0]/100,bColor[1]/100,bColor[2]/100,bColor[3]/100 });
+                }
+
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+                ImGui::Text("Orthographic Camera");
+                ImGui::Spacing();
+
+                OrthographicCamera* camera2 = (OrthographicCamera*)RObjectManager::getCameras().at(1);
+
+                {
+                    float cornersPosition[4]{ camera2->getCorners()[0],camera2->getCorners()[1],camera2->getCorners()[2], camera2->getCorners()[3] };
+                    float postitionData[3]{ camera2->getPosition().x,camera2->getPosition().y,camera2->getPosition().z };
+                    float cPlaneData[2] = { camera2->getNCP(), camera2->getFCP() };
+                    float lookAt[3]{ camera2->getLookAt().x,camera2->getLookAt().y,camera2->getLookAt().z };
+
+                    ImGui::Text("Corners Left - Right - Bottom - Top");
+                    ImGui::DragFloat4("##C2-C", cornersPosition);
+                    camera2->setCorners(cornersPosition[0], cornersPosition[1], cornersPosition[2], cornersPosition[3]);
+
+                    ImGui::Text("Camera X - Y - Z");
+                    ImGui::DragFloat3("##C2-P", postitionData);
+                    camera2->setPosition({ postitionData[0],postitionData[1],postitionData[2] });
+
+                    ImGui::Text("Near/Far clipping plane");
+                    ImGui::DragFloat2("##C2-CP", cPlaneData);
+                    camera2->setNCP(cPlaneData[0]);
+                    camera2->setFCP(cPlaneData[1]);
+
+                    ImGui::Text("LookAt X - Y - Z");
+                    ImGui::DragFloat3("##C2-LA", lookAt);
+                    camera2->setLookAt({ lookAt[0], lookAt[1], lookAt[2] });
+
+                    /*
+
+                    ImGui::Text("Number of frame to Output : ");
+
+                    ImGui::InputInt("##C2-SS", &screenshotsToOutputO, 1, 100);
+
+                    if (screenshotsToOutputO < 0) {
+                        screenshotsToOutputO = 0;
+                    }
+
+                    if (ImGui::Button("Output frames")) wOCamera.setImagesToOutput(screenshotsToOutputO);
+
+                    ImGui::Spacing();
+                    */
+
+
+                    ImGui::Text("Background color : ");
+                    float bColor[4]{ wOCamera.getClearColor().x*100, wOCamera.getClearColor().y*100, wOCamera.getClearColor().z*100, wOCamera.getClearColor().w*100 };
+
+                    ImGui::DragFloat4("##C2-BGC", bColor);
+
+                    wOCamera.setClearColor({ bColor[0]/100,bColor[1]/100,bColor[2]/100,bColor[3]/100 });
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+                ImGui::Text("Raytracing View");
+                ImGui::Spacing();
+
+                if (ImGui::Button("Update Raytracing Image")) wRay.renderImage();
+                ImGui::Spacing();
+                if (ImGui::Button("Update Raytracing Meshes")) wRay.updateObjectMeshImage();
+
+                ImGui::End();
+            }
         }
 
         // Render dear imgui onto screen

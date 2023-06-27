@@ -11,7 +11,7 @@ enum LogType
 	error
 };
 
-class WConsole : Window {
+class WConsole : public Window {
 private:
 
 	std::vector<std::pair<std::string, LogType>> logs;
@@ -31,6 +31,4 @@ public:
 	void removeLog(unsigned int logNum);
 
 	void clearLog();
-
-	bool p_open = true;
 };

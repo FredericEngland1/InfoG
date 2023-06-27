@@ -52,6 +52,33 @@
     <Filter Include="Source Files\BackEnd\Camera">
       <UniqueIdentifier>{46dce62a-c55b-43d9-9f55-4213f87e756e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FrontEnd\Lights">
+      <UniqueIdentifier>{93d1ee5d-5d73-4a66-acbd-4ff708d44c82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FrontEnd\Lights">
+      <UniqueIdentifier>{c3a52c78-bb3b-4fa5-8104-f926d47c1a13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FrontEnd\UI\Widget">
+      <UniqueIdentifier>{1cf9c3ff-7b15-45d8-bfd1-bd1c9d0d3806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BackEnd\Managers">
+      <UniqueIdentifier>{f83bc5f6-9313-43ba-9ee4-a42d54452504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BackEnd\Images">
+      <UniqueIdentifier>{15e32beb-acc7-4327-b32f-8c2dbd0d7a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BackEnd\3DModel">
+      <UniqueIdentifier>{9ada5978-d3cf-4ed9-a0e0-f6d3f36bb1d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BackEnd\Primitives">
+      <UniqueIdentifier>{c1615a65-8290-4e43-b38c-7fb708f449db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FrontEnd\UI\Primitives">
+      <UniqueIdentifier>{df52a9e1-5a50-4294-8848-3d04b39712cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FrontEnd\UI\Primitives">
+      <UniqueIdentifier>{d683cb4b-dec1-4b03-ae59-d4c3f5a50105}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Controller.cpp">
@@ -123,17 +150,44 @@
     <ClCompile Include="WSceneObject.cpp">
       <Filter>Source Files\FrontEnd\UI\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="WProperties.cpp">
+      <Filter>Source Files\FrontEnd\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WCamera.cpp">
+      <Filter>Source Files\FrontEnd\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source Files\FrontEnd\UI\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Fleche.cpp">
+      <Filter>Source Files\FrontEnd\UI\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramide.cpp">
+      <Filter>Source Files\FrontEnd\UI\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="PlusSign.cpp">
+      <Filter>Source Files\FrontEnd\UI\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="WCameraProperties.cpp">
+      <Filter>Source Files\FrontEnd\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WRaytracing.cpp">
+      <Filter>Source Files\FrontEnd\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mosaic.h">
-      <Filter>Header Files\BackEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files\FrontEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>Header Files\BackEnd</Filter>
-    </ClInclude>
     <ClInclude Include="DNDFileManager.h">
       <Filter>Header Files\FrontEnd\UI\DND</Filter>
     </ClInclude>
@@ -146,20 +200,8 @@
     <ClInclude Include="DNDWidget.h">
       <Filter>Header Files\FrontEnd\UI\DND</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files\FrontEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files\BackEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="RObject.h">
-      <Filter>Header Files\FrontEnd</Filter>
-    </ClInclude>
     <ClInclude Include="WConsole.h">
       <Filter>Header Files\FrontEnd\UI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\BackEnd</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\BackEnd\Camera</Filter>
@@ -170,12 +212,6 @@
     <ClInclude Include="OrthographicCamera.h">
       <Filter>Header Files\BackEnd\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderManager.h">
-      <Filter>Header Files\FrontEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="RObjectManager.h">
-      <Filter>Header Files\FrontEnd</Filter>
-    </ClInclude>
     <ClInclude Include="MainWConsole.h">
       <Filter>Header Files\FrontEnd\UI\Windows</Filter>
     </ClInclude>
@@ -185,12 +221,99 @@
     <ClInclude Include="Window.h">
       <Filter>Header Files\FrontEnd\UI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\FrontEnd\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\FrontEnd\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files\FrontEnd\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\FrontEnd\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="RObjectManager.h">
+      <Filter>Header Files\BackEnd\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Header Files\BackEnd\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Header Files\BackEnd\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Mosaic.h">
+      <Filter>Header Files\BackEnd\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\BackEnd\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\BackEnd\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\BackEnd\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files\BackEnd\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\BackEnd\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="RObject.h">
+      <Filter>Header Files\BackEnd\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\BackEnd</Filter>
+    </ClInclude>
+    <ClInclude Include="ImagePlane.h">
+      <Filter>Header Files\BackEnd\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="WProperties.h">
+      <Filter>Header Files\FrontEnd\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WCamera.h">
+      <Filter>Header Files\FrontEnd\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Header Files\FrontEnd\UI\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramide.h">
+      <Filter>Header Files\FrontEnd\UI\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Fleche.h">
+      <Filter>Header Files\FrontEnd\UI\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="PlusSign.h">
+      <Filter>Header Files\FrontEnd\UI\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="WCameraProperties.h">
+      <Filter>Header Files\FrontEnd\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WRaytracing.h">
+      <Filter>Header Files\FrontEnd\UI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="GreyFShader.shader">
       <Filter>Source Files\FrontEnd\Shaders</Filter>
     </None>
     <None Include="WhiteFShader.shader">
+      <Filter>Source Files\FrontEnd\Shaders</Filter>
+    </None>
+    <None Include="Phong.shader">
+      <Filter>Source Files\FrontEnd\Shaders</Filter>
+    </None>
+    <None Include="Geometry.shader">
+      <Filter>Source Files\FrontEnd\Shaders</Filter>
+    </None>
+    <None Include="SkyboxVS.shader">
+      <Filter>Source Files\FrontEnd\Shaders</Filter>
+    </None>
+    <None Include="SkyboxFS.shader">
+      <Filter>Source Files\FrontEnd\Shaders</Filter>
+    </None>
+    <None Include="TriangleIntersect.shader">
       <Filter>Source Files\FrontEnd\Shaders</Filter>
     </None>
     <None Include="PBS.shader">

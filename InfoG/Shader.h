@@ -17,13 +17,13 @@ private:
 	void compileErrorCheck(unsigned int shader);
 	// Create, compiles and attach a type of shader to the program passed in the arguments
 	unsigned int compileShader(const std::string& shaderSource, unsigned int shaderType, unsigned int program);
-	int createShader(const std::string& vShaderS, const std::string& fShaderS);
+	int createShader(const std::string& vShaderS, const std::string& fShaderS, const std::string& gShaderS = "");
 
 	unsigned int program;
 
 public:
 
-	Shader(const std::string& vShader, const std::string& fShader);
+	Shader(const std::string& vShaderPath, const std::string& fShaderPath, const std::string& gShaderPath = "");
 	Shader() = default;
 
 	void use();

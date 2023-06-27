@@ -105,6 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,17 +145,24 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DNDFileManager.cpp" />
     <ClCompile Include="DNDImgWidget.cpp" />
     <ClCompile Include="DNDMosaicWidget.cpp" />
     <ClCompile Include="DNDWidget.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="MainWConsole.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="OrthographicCamera.cpp" />
     <ClCompile Include="PerspectiveCamera.cpp" />
+    <ClCompile Include="PlusSign.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Pyramide.cpp" />
     <ClCompile Include="RObject.cpp" />
     <ClCompile Include="Mosaic.cpp" />
     <ClCompile Include="Project.cpp" />
@@ -163,34 +171,59 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Fleche.cpp" />
+    <ClCompile Include="WCamera.cpp" />
+    <ClCompile Include="WCameraProperties.cpp" />
     <ClCompile Include="WConsole.cpp" />
+    <ClCompile Include="WProperties.cpp" />
+    <ClCompile Include="WRaytracing.cpp" />
     <ClCompile Include="WSceneObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DNDFileManager.h" />
     <ClInclude Include="DNDImgWidget.h" />
     <ClInclude Include="DNDMosaicWidget.h" />
     <ClInclude Include="DNDWidget.h" />
+    <ClInclude Include="ImagePlane.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="MainWConsole.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="OrthographicCamera.h" />
     <ClInclude Include="PerspectiveCamera.h" />
+    <ClInclude Include="PlusSign.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Pyramide.h" />
     <ClInclude Include="RObject.h" />
     <ClInclude Include="Mosaic.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RObjectManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Fleche.h" />
+    <ClInclude Include="WCamera.h" />
+    <ClInclude Include="WCameraProperties.h" />
     <ClInclude Include="WConsole.h" />
+    <ClInclude Include="WProperties.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WRaytracing.h" />
     <ClInclude Include="WSceneObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Geometry.shader" />
     <None Include="GreyFShader.shader" />
     <None Include="PBS.shader" />
+    <None Include="Phong.shader" />
+    <None Include="SkyboxFS.shader" />
+    <None Include="SkyboxVS.shader" />
+    <None Include="TriangleIntersect.shader" />
     <None Include="WhiteFShader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
